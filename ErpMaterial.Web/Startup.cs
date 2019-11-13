@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ErpMaterial.Repository;
+using ErpMaterial.Models;
+using ErpMaterial.Service;
+using ErpMaterial.Service.Interface;
 
 namespace ErpMaterial.Web
 {
@@ -22,7 +26,8 @@ namespace ErpMaterial.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IPlanReportService, PlanReportService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

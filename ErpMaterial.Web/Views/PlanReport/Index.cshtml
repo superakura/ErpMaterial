@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewData["Title"] = "计划提报";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section modal{
+}
+    <div class="layui-row">
+        <div class="layui-col-xs2">
+            <h1>计划提报</h1>
+            <div class="grid-demo grid-demo-bg1">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                    <legend>部门信息</legend>
+                </fieldset>
+                <div id="test1" class="demo-tree-more" style="font-size:18px"></div>
+            </div>
+        </div>
+        <div class="layui-col-xs10">
+            <div class="grid-demo">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">物资编码</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="date" id="btnDate" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">物资名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="number" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <div class="layui-btn-group">
+                                    <button class="layui-btn">查询</button>
+                                    <button class="layui-btn"><i class="layui-icon layui-icon-refresh"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <table class="layui-hide" id="demo" lay-filter="test"></table>
+
+                <script type="text/html" id="toolbarDemo">
+                    <div class="layui-btn-container">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+                            <button class="layui-btn layui-btn-sm" lay-event="del">删除</button>
+                        </div>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+    <script>
+    layui.use(['tree', 'util'], function () {
+        var tree = layui.tree
+            , layer = layui.layer
+            , util = layui.util
+
+            //模拟数据1
+            , data1 = [{
+                title: '炼油一厂'
+                , id: 1
+                , children: [
+                    {
+                        title: '一套常减压'
+                        , id: 1001
+                    }, {
+                        title: '柴油加氢'
+                        , id: 1002
+                    }]
+            }, {
+                title: '炼油二厂'
+                , id: 2
+                , children: [{
+                    title: '二套ARGG装置'
+                    , id: 2000
+                }, {
+                    title: '烷基化装置'
+                    , id: 2001
+                }]
+            }, {
+                title: '聚丙烯厂'
+                , id: 3
+                , children: [{
+                    title: '一套聚丙烯'
+                    , id: 3000
+                }, {
+                    title: '二套聚丙烯'
+                    , id: 3001
+                }]
+            }]
+
+        //常规用法
+        tree.render({
+            elem: '#test1' //默认是点击节点可进行收缩
+            , data: data1
+        });
+    });
+
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#demo'
+            , url: '/PlanReport/ListPage'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports']
+            , title: '计划提报明细'
+            , cols: [[
+                { type: 'checkbox', fixed: 'left' }
+                , { field: 'planReportId', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true }
+                , { field: 'materialCode', title: '物资编码' }
+                , { field: 'materialDesc', title: '物资名称' }
+                //, { field: 'MaterialDesc', title: '规格型号' }
+                //, { field: 'caizhi', title: '材质' }
+                , { field: 'materialCount', title: '数量'}
+                , { field: 'planReportDept', title: '提报单位' }
+                , { field: 'planReportPerson', title: '提报人' }
+                , { field: 'planReportDateTime', title: '提报时间' }
+            ]]
+            , page: true
+            , height: 'full-205'
+        });
+
+        table.on('toolbar(test)', function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    //layer.msg('添加');
+                    layer.open({
+                        type: 1,//类型,
+                        id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                        area: ['600px', '700px'],//定义宽和高
+                        title: '查看详细信息',//题目
+                        shadeClose: false,//点击遮罩层关闭
+                        content: $('#addLay')//打开的内容
+                    });
+                    //layer.open({
+                    //    type: 2,
+                    //    content: "addCode"
+                    //});
+                    break;
+                case 'del':
+                    layer.open({
+                        type: 1,//类型,
+                        id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                        area: ['600px', '700px'],//定义宽和高
+                        title: '查看详细信息',//题目
+                        shadeClose: false,//点击遮罩层关闭
+                        content: $('#delLay')//打开的内容
+                    });
+                    break;
+            };
+        });
+    });
+
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#btnDate'
+        });
+    });
+
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(*)', function (data) {
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+    </script>
