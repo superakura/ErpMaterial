@@ -24,7 +24,6 @@ namespace ErpMaterial.Models
         public virtual DbSet<MaterialUse> MaterialUse { get; set; }
         public virtual DbSet<MaterialWithDrawal> MaterialWithDrawal { get; set; }
         public virtual DbSet<PlanReport> PlanReport { get; set; }
-        public virtual DbSet<RequisitionDept> RequisitionDept { get; set; }
         public virtual DbSet<Stock> Stock { get; set; }
         public virtual DbSet<WasteMaterials> WasteMaterials { get; set; }
 
@@ -32,8 +31,8 @@ namespace ErpMaterial.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True",
+                    b => b.UseRowNumberForPaging());
             }
         }
 
@@ -424,16 +423,6 @@ namespace ErpMaterial.Models
                 entity.Property(e => e.PlanReportDept).HasMaxLength(500);
 
                 entity.Property(e => e.PlanReportPerson).HasMaxLength(500);
-            });
-
-            modelBuilder.Entity<RequisitionDept>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.Property(e => e.RequisitionDeptId)
-                    .HasColumnName("RequisitionDeptID")
-                    .HasMaxLength(10)
-                    .IsFixedLength();
             });
 
             modelBuilder.Entity<Stock>(entity =>

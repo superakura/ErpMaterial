@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ErpMaterial.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErpMaterial.Repository
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity:class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private ErpMaterialContext db;
         private DbSet<TEntity> dbset;
@@ -27,7 +24,7 @@ namespace ErpMaterial.Repository
                 dbset.Attach(entity);
             }
             dbset.Remove(entity);
-            return db.SaveChanges()==1?true:false;
+            return db.SaveChanges() == 1 ? true : false;
         }
 
         public TEntity GetByID(object id)
@@ -58,7 +55,7 @@ namespace ErpMaterial.Repository
             }
             dbset.Attach(entity);
             db.Entry(entity).State = EntityState.Modified;
-            return db.SaveChanges()==1?true:false;
+            return db.SaveChanges() == 1 ? true : false;
         }
 
         private bool HandleDetached(TEntity entity)

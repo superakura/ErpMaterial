@@ -16,9 +16,13 @@ namespace ErpMaterial.Service
             this._repo = repo;
         }
 
-        public List<PlanReport> list()
+        public PageLayUI<PlanReport> list()
         {
-            return _repo.GetList().ToList();
+            var planReport = _repo.GetList();
+            PageLayUI<PlanReport> pageLayUI = new PageLayUI<PlanReport>();
+            pageLayUI.count = planReport.Count();
+            pageLayUI.data = planReport.ToList();
+            return pageLayUI;
         }
 
         public PageLayUI<PlanReport> listPage(int page, int limit)
@@ -28,7 +32,7 @@ namespace ErpMaterial.Service
             var planReport = _repo.GetList();
             PageLayUI<PlanReport> pageLayUI = new PageLayUI<PlanReport>();
             pageLayUI.count = planReport.Count();
-            pageLayUI.data = planReport.Skip(skip).Take(limit).ToList();
+            pageLayUI.data = planReport.OrderBy(o=>o.PlanReportId).Skip(skip).Take(limit).ToList();
             return pageLayUI;
         }
     }

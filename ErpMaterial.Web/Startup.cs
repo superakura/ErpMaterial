@@ -11,6 +11,7 @@ using ErpMaterial.Repository;
 using ErpMaterial.Models;
 using ErpMaterial.Service;
 using ErpMaterial.Service.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace ErpMaterial.Web
 {
@@ -26,8 +27,12 @@ namespace ErpMaterial.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddEntityFrameworkSqlServer()
+                .AddDbContext<ErpMaterialContext>(options =>{options.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True",b => b.UseRowNumberForPaging());});
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IPlanReportService, PlanReportService>();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +49,6 @@ namespace ErpMaterial.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

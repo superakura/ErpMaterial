@@ -8,7 +8,7 @@ namespace ErpMaterial.Service.Interface
 {
     public interface IPlanReportService
     {
-        List<PlanReport> list();
-        PageLayUI<PlanReport> listPage(int page,int limit);
+        PageLayUI<PlanReport> list();
+        PageLayUI<PlanReport> listPage(int page, int limit);
     }
 }

@@ -26,20 +26,27 @@ namespace ErpMaterial.Web.Controllers
 
         public JsonResult List()
         {
-            var skip = Request.Query["page"]=="1"?0: (Convert.ToInt32(Request.Query["page"])-1)* Convert.ToInt32(Request.Query["limit"]);
+            var skip = Request.Query["page"] == "1" ? 0 : (Convert.ToInt32(Request.Query["page"]) - 1) * Convert.ToInt32(Request.Query["limit"]);
             var take = Convert.ToInt32(Request.Query["limit"]);
 
             List<PlanReport> planReport = new List<PlanReport>();
             for (int i = 1; i <= 100; i++)
             {
-                planReport.Add(new PlanReport { 
+                planReport.Add(new PlanReport
+                {
                     PlanReportId = i
-                    ,MaterialCode = ("编码" + i)
-                    , MaterialDesc = "描述" + i 
-                    , MaterialCount = i 
-                    , PlanReportDept = "部门 "+i 
-                    , PlanReportPerson = "人员 "+i 
-                    , MaterialAge = "账龄"+i 
+                    ,
+                    MaterialCode = ("编码" + i)
+                    ,
+                    MaterialDesc = "描述" + i
+                    ,
+                    MaterialCount = i
+                    ,
+                    PlanReportDept = "部门 " + i
+                    ,
+                    PlanReportPerson = "人员 " + i
+                    ,
+                    MaterialAge = "账龄" + i
                 });
             }
             PageLayUI<PlanReport> pageLayUI = new PageLayUI<PlanReport>();
@@ -57,6 +64,11 @@ namespace ErpMaterial.Web.Controllers
             int.TryParse(Request.Query["limit"], out limit);
 
             return Json(_servicePlanReport.listPage(page, limit));
+        }
+
+        public JsonResult ListAll()
+        {
+            return Json(_servicePlanReport.list());
         }
     }
 }
