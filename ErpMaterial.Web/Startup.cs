@@ -29,17 +29,19 @@ namespace ErpMaterial.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //更新数据库步骤
-            //1、删除models下的文件
-            //2、执行命令 Scaffold-DbContext "Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -O / -F
-            //3、
-
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ErpMaterialContext>(options =>{options.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True",b => b.UseRowNumberForPaging());});
+                .AddDbContext<ErpMaterialContext>(options => { options.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True", b => b.UseRowNumberForPaging()); });
 
             #region 依赖注入
-            services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IPlanReportService, PlanReportService>();
+            services.AddTransient<ISysAuthorityService, SysAuthService>();
+            services.AddTransient<ISysRoleService, SysRoleService>();
+            services.AddTransient<ISysLogService, SysLogService>();
+            services.AddTransient<ISysDeptService,SysDeptService>();
+            services.AddTransient<ISysNoticeService,SysNoticeService>();
+            services.AddTransient<ISysUserService,SysUserService>();
+            services.AddTransient<ISysRoleAuthService,SysRoleAuthService>();
             #endregion
 
             #region 添加cookie认证服务
@@ -83,7 +85,7 @@ namespace ErpMaterial.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Login}/{id?}");
             });
         }
     }

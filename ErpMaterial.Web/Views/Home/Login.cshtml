@@ -1,16 +1,46 @@
 ﻿
-@{
-    Layout = null;
-}
+
+
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>招标管理平台--登录</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    @*<link href="/Content/signin.css" rel="stylesheet" />*@
+    <!--[if lt IE 9]>
+        <script src="/Scripts/html5shiv.js"></script>
+        <script src="/Scripts/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
+    <div class="container">
+        <div class="col-md-4">
 
+        </div>
+        <div class="col-md-4">
+            <form class="form-signin" action="/Home/Login" method="post" role="form">
+                <h2 class="form-signin-heading">物资监审平台</h2>
+                <label for="inputEmail">员工编号</label>
+                <input type="text" id="userNum" name="userNum" class="form-control" placeholder="员工编号" required="" autofocus="">
+                <label for="inputPassword">考勤密码</label>
+                <input type="password" id="pwd" name="pwd" class="form-control" placeholder="考勤密码" required="">
+                <br />
+                <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+                <div class="validation-summary-valid" data-valmsg-summary="true">
+                    <ul>
+                        <li style="display:none"></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+
+    </div>
 </body>
 </html>

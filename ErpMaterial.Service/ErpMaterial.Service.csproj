@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LinqKit" Version="1.1.17" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ErpMaterial.Common\ErpMaterial.Common.csproj" />
     <ProjectReference Include="..\ErpMaterial.Models\ErpMaterial.Models.csproj" />
     <ProjectReference Include="..\ErpMaterial.Repository\ErpMaterial.Repository.csproj" />

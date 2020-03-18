@@ -5,28 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\ErpDetail.cs" Link="ErpDetail.cs" />
-    <Compile Include="..\..\..\ErpMaterialContext.cs" Link="ErpMaterialContext.cs" />
-    <Compile Include="..\..\..\ErpPlan.cs" Link="ErpPlan.cs" />
-    <Compile Include="..\..\..\ErpPurchase.cs" Link="ErpPurchase.cs" />
-    <Compile Include="..\..\..\ErpStorage.cs" Link="ErpStorage.cs" />
-    <Compile Include="..\..\..\MaterialProcurement.cs" Link="MaterialProcurement.cs" />
-    <Compile Include="..\..\..\MaterialStorage.cs" Link="MaterialStorage.cs" />
-    <Compile Include="..\..\..\MaterialUse.cs" Link="MaterialUse.cs" />
-    <Compile Include="..\..\..\MaterialWithDrawal.cs" Link="MaterialWithDrawal.cs" />
-    <Compile Include="..\..\..\PlanReport.cs" Link="PlanReport.cs" />
-    <Compile Include="..\..\..\Stock.cs" Link="Stock.cs" />
-    <Compile Include="..\..\..\SysAuthorityInfo.cs" Link="SysAuthorityInfo.cs" />
-    <Compile Include="..\..\..\SysDeptInfo.cs" Link="SysDeptInfo.cs" />
-    <Compile Include="..\..\..\SysLog.cs" Link="SysLog.cs" />
-    <Compile Include="..\..\..\SysNoticeInfo.cs" Link="SysNoticeInfo.cs" />
-    <Compile Include="..\..\..\SysRoleAuthority.cs" Link="SysRoleAuthority.cs" />
-    <Compile Include="..\..\..\SysRoleInfo.cs" Link="SysRoleInfo.cs" />
-    <Compile Include="..\..\..\SysUserInfo.cs" Link="SysUserInfo.cs" />
-    <Compile Include="..\..\..\WasteMaterials.cs" Link="WasteMaterials.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6">
       <PrivateAssets>all</PrivateAssets>

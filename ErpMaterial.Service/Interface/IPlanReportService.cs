@@ -8,7 +8,10 @@ namespace ErpMaterial.Service.Interface
 {
     public interface IPlanReportService
     {
-        PageLayUI<PlanReport> list();
-        PageLayUI<PlanReport> listPage(int page, int limit);
+        PageLayUI<PlanReport> listPage(int page, int limit,Dictionary<string,object> whereList);
+
+        bool Update(Models.PlanReport planReport);
+
+        bool Del(int id);
     }
 }

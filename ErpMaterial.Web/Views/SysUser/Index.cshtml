@@ -1,0 +1,574 @@
+﻿
+
+@{
+    ViewData["Title"] = "用户管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section modal{
+    <div id="editLay" style="display: none;">
+        <form class="layui-form" id="formEdit" lay-filter="formEdit">
+            <div class="layui-tab layui-tab-brief" lay-filter="userTab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="tab1">基本信息</li>
+                    <li lay-id="tab2">角色信息</li>
+                    <li lay-id="tab3">管理范围</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-row">
+                            <div class="layui-col-md11">
+
+                                <br />
+                                <input type="text" name="formInfoID" id="formInfoID" class="layui-hide">
+                                <input type="text" name="userDeptID" id="userDeptID" class="layui-hide">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">用户姓名</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="tbxUserName" lay-verify="required" placeholder="用户姓名" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">员工编号</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="tbxUserNum" lay-verify="required" placeholder="员工编号" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">职务</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="tbxUserDuty" placeholder="职务" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">电话</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="tbxUserPhone" placeholder="电话" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">手机</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="tbxUserMobile" placeholder="手机" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">Email</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="tbxUserEmail" placeholder="Email" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                    <label class="layui-form-label">备注信息</label>
+                                    <div class="layui-input-block">
+                                        <textarea placeholder="备注信息" name="tbxUserRemark" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                @*<div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                                        </div>
+                                    </div>*@
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div class="layui-row">
+                            <div class="layui-col-md12">
+                                <table class="layui-hide" id="tbIAddRoleInfo" lay-filter="tbIAddRoleInfo"></table>
+                                <table class="layui-hide" id="tbIUserRoleInfo" lay-filter="tbIUserRoleInfo"></table>
+                                <script type="text/html" id="barAddRole">
+                                    <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="addRole">新增</a>
+                                </script>
+                                <script type="text/html" id="barDelRole">
+                                    <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delRole">删除</a>
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div id="userManageTree" class="demo-tree-more" style="font-size:12px"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                <button class="layui-btn" lay-submit lay-filter="btnTest">测试</button>
+            </div>
+        </form>
+    </div>
+}
+
+<div class="layui-row">
+    <div class="layui-col-xs2">
+        <div class="grid-demo grid-demo-bg1">
+            <div id="test1" class="demo-tree-more" style="font-size:13px"></div>
+        </div>
+    </div>
+    <div class="layui-col-xs10">
+        <div class="grid-demo">
+            <form class="layui-form layui-form-pane" id="formSearch">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div>当前部门：<span id="selectDeptName"></span><span id="selectDeptID" class="layui-hide"></span></div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">员工姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="searchUserName" id="searchUserName" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">员工编号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="searchUserNum" id="searchUserName" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">员工职务</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="searchUserDuty" id="searchUserName" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <div class="layui-btn-group">
+                                <button class="layui-btn" type="button" id="btnSearch">查询</button>
+                                <button class="layui-btn layui-btn-primary" type="button" id="btnRefresh">
+                                    <i class="layui-icon layui-icon-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <table class="layui-hide" id="tbInfo" lay-filter="tbInfo"></table>
+
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></a>
+                <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delRow"><i class="layui-icon layui-icon-delete"></i></a>
+                <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="changeDept">调整部门</a>
+            </script>
+
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add">新增</button>
+                    </div>
+                </div>
+            </script>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['tree', 'util', 'table', 'laydate', 'form', 'element'], function () {
+        var tree = layui.tree
+            , layer = layui.layer
+            , util = layui.util
+            , table = layui.table
+            , laydate = layui.laydate
+            , element = layui.element
+            , form = layui.form;
+
+        //获取部门列表
+        GetDeptList();
+        function GetDeptList() {
+            $.post("/SysDept/ListAll", { selectDeptList: "" }, function (result) {
+                //console.log(result);
+                tree.render({
+                    elem: '#test1' //默认是点击节点可进行收缩
+                    , data: result
+                    , showCheckbox: false  //是否显示复选框
+                    , id: 'demoId' //定义索引
+                    , onlyIconControl: true
+                    , oncheck: function (obj) {
+                        //console.log(obj.data); //得到当前点击的节点数据
+                        //console.log(obj.checked); //得到当前节点的展开状态：open、close、normal
+                        //console.log(obj.elem); //得到当前节点元素
+                    }
+                    , click: function (obj) {
+                        //console.log(obj.data); //得到当前点击的节点数据
+                        $("#selectDeptName").text(obj.data.title);
+                        $("#selectDeptID").text(obj.data.id);
+                        tableReload();
+                        //$("#userDeptID").val(obj.data.id);
+                        //console.log(obj.state); //得到当前节点的展开状态：open、close、normal
+                        //console.log(obj.elem); //得到当前节点元素
+
+                        //console.log(obj.data.children); //当前节点下是否有子节点
+                    }
+                });
+            });
+        }
+
+        //获取用户管理部门列表
+        function GetUserManageTree(userDeptList) {
+            $.post("/SysDept/ListAll", { selectDeptList: userDeptList }, function (result) {
+                console.log(result);
+                tree.render({
+                    elem: '#userManageTree' //默认是点击节点可进行收缩
+                    , data: result
+                    , showCheckbox: true  //是否显示复选框
+                    , id: 'userManageTreeId' //定义索引
+                    , onlyIconControl: true
+                    , oncheck: function (obj) {
+                        //console.log(obj.data); //得到当前点击的节点数据
+                        //console.log(obj.checked); //得到当前节点的展开状态：open、close、normal
+                        //console.log(obj.elem); //得到当前节点元素
+                    }
+                    , click: function (obj) {
+                        //console.log(obj.data); //得到当前点击的节点数据
+                        //$("#selectDeptName").text(obj.data.title);
+                        //$("#selectDeptID").text(obj.data.id);
+                        //tableReload();
+                        //$("#userDeptID").val(obj.data.id);
+                        //console.log(obj.state); //得到当前节点的展开状态：open、close、normal
+                        //console.log(obj.elem); //得到当前节点元素
+                        //console.log(obj.data.children); //当前节点下是否有子节点
+                    }
+                });
+                //tree.setChecked('userManageTreeId', userDeptList);
+            });
+        }
+
+        //用户列表初始化
+        var tableIns = table.render({
+            elem: '#tbInfo'
+            , url: '/SysUser/ListPage'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports']
+            , title: '数据表格'
+            , cols: [[
+                //{ type: 'checkbox', fixed: 'left' }
+                { align: 'center', toolbar: '#barDemo', fixed: 'left', width: 210, title: '操作' }
+                , { field: 'userID', title: 'ID', width: 80, fixed: 'left', hide: true }
+                , { field: 'userName', title: '姓名' }
+                , { field: 'userNum', title: '编号' }
+                , { field: 'userDuty', title: '职务' }
+                , { field: 'userState', title: '状态' }
+                , { field: 'userPhone', title: '电话' }
+                , { field: 'userMobile', title: '手机' }
+                , { field: 'userDeptName', title: '部门' }
+            ]]
+            , page: true
+            , height: 'full-150'
+        });
+
+        //获取角色信息列表函数
+        function GetRoleList() {
+            var tableAddRoleIns = table.render({
+                elem: '#tbIAddRoleInfo'
+                , url: '/SysRole/ListPage'
+                , title: '数据表格'
+                , cols: [[
+                    { align: 'center', toolbar: '#barAddRole', width: 80, title: '操作' }
+                    , { field: 'roleId', title: 'ID', hide: true }
+                    , { field: 'roleName', title: '角色名称' }
+                    , { field: 'roleDescribe', title: '角色描述' }
+                ]]
+                , page: true
+                , limits: [5, 10]
+                , limit: 5 //每页默认显示的数量
+            });
+        };
+
+        //用户表格修改、删除事件
+        table.on('tool(tbInfo)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            //console.log(data);
+            //console.log(data.userId);
+
+            switch (obj.event) {
+                case 'edit':
+                    var deptList = [];
+                    $.post("/SysUser/GetOne", { id: data.userId }, function (result) {
+                        //console.log(result);
+                        //console.log(typeof (result.userInfo.userDeptCtrlList));
+                        deptList = result.userInfo.userDeptCtrlList.split(",");
+                        var deptListInt = [];
+                        $.each(deptList, function (indexInArray, valueOfElement) {
+                            deptListInt.push(parseInt(valueOfElement));
+                        });
+                        //console.log(deptListInt);
+                        GetUserManageTree(result.userInfo.userDeptCtrlChildList);
+
+                        GetRoleList();
+                        LoadUserRoleTable(result.userRole);
+
+                        layer.open({
+                            type: 1,//类型,
+                            id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                            area: ['600px', '700px'],//定义宽和高
+                            //area: ['600px'],//定义宽和高
+                            title: '编辑信息',//题目
+                            shadeClose: false,//点击遮罩层关闭
+                            content: $('#editLay'),//打开的内容
+                            success: function (layero, index) {
+                                //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                                form.val("formEdit", {
+                                    "formInfoID": data.userId
+                                    , "userDeptID": data.userDeptId
+                                    , "tbxUserName": data.userName
+                                    , "tbxUserNum": data.userNum
+                                    , "tbxUserDuty": data.userDuty
+                                    , "tbxUserPhone": data.userPhone
+                                    , "tbxUserMobile": data.userMobile
+                                    , "tbxUserEmail": data.userEmail
+                                    , "tbxUserRemark": data.userRemark
+                                });
+                                $(".layui-layer-shade").appendTo(layero.parent());
+                            }
+                        });
+                    });
+                    break;
+                case 'delRow':
+                    layer.confirm('确定要删除吗？', function (index) {
+                        $.post("/SysRole/Del", { id: data.roleId }, function (result) {
+                            if (result == "ok") {
+                                layer.msg('操作成功！', { icon: 6 });
+                                tableIns.reload();
+                            }
+                            else {
+                                layer.msg('错误:' + result, { icon: 5 });
+                            }
+                        });
+                        return false;
+                    });
+                    break;
+            };
+        });
+
+        //新增按钮
+        table.on('toolbar(tbInfo)', function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    if ($("#selectDeptID").text() == "") {
+                        layer.msg("请先选择一个部门！");
+                        return false;
+                    }
+                    layer.open({
+                        type: 1,//类型,
+                        id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                        area: ['600px', '650px'],//定义宽和高
+                        //area: ['600px'],//定义宽和高
+                        title: '新增信息',//题目
+                        shadeClose: false,//点击遮罩层关闭
+                        content: $('#editLay'),//打开的内容
+                        success: function (layero, index) {
+                            $("#formEdit")[0].reset();
+                            $("#userDeptID").val($("#selectDeptID").text());
+                            //tableAddRoleIns.reload();
+                            GetRoleList();
+                            GetUserManageTree("");
+                            $(".layui-layer-shade").appendTo(layero.parent());
+                        }
+                    });
+                    element.tabChange('userTab', 'tab1');
+                    break;
+            };
+        });
+
+        var roleList = [];
+
+        function LoadUserRoleTable(roleTableInfo) {
+            var tbIUserRoleInfo = table.render({
+                elem: '#tbIUserRoleInfo'
+                //, url: roleTableInfo
+                , data: roleTableInfo
+                , title: '数据表格'
+                , cols: [[
+                    { align: 'center', toolbar: '#barDelRole', width: 80, title: '操作' }
+                    , { field: 'roleId', title: 'ID', hide: true }
+                    , { field: 'roleName', title: '角色名称' }
+                    , { field: 'roleDescribe', title: '角色描述' }
+                ]]
+                , page: true
+                , limits: [5, 10]
+                , limit: 5 //每页默认显示的数量
+            });
+        };
+
+        //添加角色表格
+        table.on('tool(tbIAddRoleInfo)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            switch (obj.event) {
+                case 'addRole':
+                    //console.log(data);
+                    var roleID = data.roleId;
+
+                    //console.log(roleID);
+                    for (var i = 0; i < roleList.length; i++) {
+                        if (roleList[i].roleId == data.roleId) {
+                            layer.msg("不能重复添加角色！");
+                            return false;
+                        }
+                    }
+                    roleList.push(data);
+                    LoadUserRoleTable(roleList);
+                    break;
+            };
+        });
+
+        //用户已包含的角色表格 
+        table.on('tool(tbIUserRoleInfo)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            switch (obj.event) {
+                case 'delRole':
+                    obj.del();
+                    for (var i = 0; i < roleList.length; i++) {
+                        if (roleList[i].roleId == data.roleId) {
+                            roleList.splice(i, 1);
+                        }
+                    }
+                    //LoadUserRoleTable(roleList);
+
+                    //console.log(roleList);
+
+                    break;
+            };
+        });
+
+        //提交按钮
+        form.on('submit(formDemo)', function (data) {
+
+            //console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            if (data.field.userDeptID == "") {
+                layer.msg("请先选择一个部门！");
+                return false;
+            }
+
+            layer.confirm('确定要提交吗？', function (index) {
+                //在前端将对象数组中的roleIID提取出来再向后台传输
+                //后台取数据时，将ID数组当做参数传入获取角色信息列表
+                var roleIdList = getRoleIdList(roleList);
+                function getRoleIdList(jsonRoleObj) {
+                    var id = "";
+                    $.each(jsonRoleObj, function (index, item) {
+                        if (id != "") {
+                            id = id + "," + item.roleId;
+                        }
+                        else {
+                            id = item.roleId;
+                        }
+                    });
+                    return id;
+                }
+                data.field.roleList = roleIdList;
+
+                //获取选中节点的ID数组，修改时候将ID设置回tree中
+                var checkedData = tree.getChecked('userManageTreeId'); //获取选中节点的数据
+                //console.log(checkedData);
+                var ids = getCheckedId(checkedData);
+                function getCheckedId(jsonObj) {
+                    var id = "";
+                    $.each(jsonObj, function (index, item) {
+                        if (id != "") {
+                            id = id + "," + item.id;
+                        }
+                        else {
+                            id = item.id;
+                        }
+                        var i = getCheckedId(item.children);
+                        if (i != "") {
+                            id = id + "," + i;
+                        }
+                    });
+                    return id;
+                }
+
+                var idsChildTemp = getCheckedChildId(checkedData).split(",");
+                //console.log(idsChildTemp);
+                var idsChild = "";
+                for (var i = 0; i < idsChildTemp.length; i++) {
+                    if (idsChildTemp[i] != "") {
+                        idsChild = idsChild + idsChildTemp[i] + ",";
+                    }
+                }
+                //console.log(idsChild);
+                var tempChild = idsChild.substr(0, idsChild.length - 1);
+                //console.log(tempChild);
+                function getCheckedChildId(jsonObj) {
+                    var id = "";
+                    $.each(jsonObj, function (index, item) {
+                        if (id != "") {
+                            if (item.children.length == 0) {
+                                id = id + "," + item.id;
+                            }
+                        }
+                        else {
+                            if (item.children.length == 0) {
+                                id = item.id;
+                            }
+                        }
+                        var i = getCheckedChildId(item.children);
+                        if (i != "") {
+                            id = id + "," + i;
+                        }
+                    });
+                    return id;
+                }
+
+                data.field.userDeptList = ids;
+                data.field.userDeptListChild = tempChild;
+
+                //console.log(data.field);
+                $.post("/SysUser/Update", data.field, function (result) {
+                    if (result == "ok") {
+                        layer.msg('操作成功！', { icon: 6 });
+                        layer.closeAll('page'); //关闭所有页面层
+                        tableIns.reload();
+                    }
+                    else {
+                        layer.msg('错误:' + result, { icon: 5 });
+                    }
+                });
+                return false;
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        form.on('submit(btnTest)', function (data) {
+            tree.setChecked('userManageTreeId', 3);
+            //tree.setChecked('userManageTreeId', [1, 35, 47, 33, 45]);
+            return false;
+        })
+
+        //
+        function tableReload() {
+            tableIns.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    searchUserName: $("#searchUserName").val()
+                    , searchUserNum: $("#searchUserNum").val()
+                    , selectDeptID: $("#selectDeptID").text()
+                }
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        }
+
+        $("#btnSearch").click(function () {
+            tableReload();
+        });
+
+        $("#btnRefresh").click(function () {
+            $("#formSearch")[0].reset();
+            tableReload();
+        });
+    });
+</script>
+
+
+

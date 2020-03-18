@@ -1,75 +1,79 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using ErpMaterial.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ErpMaterial.Repository
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private ErpMaterialContext db;
-        private DbSet<TEntity> dbset;
-        public GenericRepository()
+
+        public GenericRepository(ErpMaterialContext _db)
         {
-            this.db = new ErpMaterialContext();
-            this.dbset = db.Set<TEntity>();
+            db = _db;
         }
 
-        public bool Delete(object id)
+        public async Task<bool> Add(T Entity)
         {
-            TEntity entity = dbset.Find(id);
-            if (db.Entry(entity).State == EntityState.Detached)
-            {
-                dbset.Attach(entity);
-            }
-            dbset.Remove(entity);
-            return db.SaveChanges() == 1 ? true : false;
+
+            //老写法
+            //db.Entry(Entity).State = EntityState.Added;
+            await db.Set<T>().AddAsync(Entity);
+            return await db.SaveChangesAsync() > 0;
         }
 
-        public TEntity GetByID(object id)
+        public async Task<bool> Delete(T Entity)
         {
-            return dbset.Find(id);
+            //老写法
+            //db.Set<T>().Attach(Entity);
+            //db.Entry(Entity).State = EntityState.Deleted;
+            //新写法
+            db.Set<T>().Remove(Entity);
+            return await db.SaveChangesAsync() > 0;
         }
 
-        public IQueryable<TEntity> GetList()
+        public async Task<bool> Update(T Entity)
         {
-            return dbset;
+            //老写法
+            //db.Set<T>().Attach(Entity);
+            //db.Entry(Entity).State = EntityState.Modified;
+            //新写法
+            db.Set<T>().Update(Entity);
+            return await db.SaveChangesAsync() > 0;
+        }
+        private IEnumerable<T> CompileQuery(Expression<Func<T, bool>> exp)
+        {
+            var func = EF.CompileQuery((ErpMaterialContext context, Expression<Func<T, bool>> exps) => context.Set<T>().Where(exp));
+            return func(db, exp);
+        }
+        public IEnumerable<T> GetEntities(Expression<Func<T, bool>> exp)
+        {
+            //var data = db.Set<T>().Find()
+            return CompileQuery(exp);
         }
 
-        public bool Insert(TEntity entity)
+        public IEnumerable<T> GetEntitiesForPaging(int Page, int pageSize, Expression<Func<T, bool>> exp)
         {
-            dbset.Add(entity);
-            return db.SaveChanges() == 1 ? true : false;
+            return CompileQuery(exp).Skip((Page - 1) * pageSize).Take(pageSize);
+        }
+        public T GetEntity(Expression<Func<T, bool>> exp)
+        {
+            return CompileQuerySingle(exp);
+        }
+        private T CompileQuerySingle(Expression<Func<T, bool>> exp)
+        {
+            var func = EF.CompileQuery((ErpMaterialContext context, Expression<Func<T, bool>> exps) => context.Set<T>().FirstOrDefault(exp));
+            return func(db, exp);
         }
 
-        public bool Update(TEntity entity)
+        public IQueryable<T> GetList(Expression<Func<T, bool>> exp)
         {
-            if (entity == null)
-            {
-                throw new ArgumentException("entity");
-            }
-            if (db.Entry(entity).State == EntityState.Detached)
-            {
-                HandleDetached(entity);
-            }
-            dbset.Attach(entity);
-            db.Entry(entity).State = EntityState.Modified;
-            return db.SaveChanges() == 1 ? true : false;
-        }
-
-        private bool HandleDetached(TEntity entity)
-        {
-            var objectContext = ((IObjectContextAdapter)db).ObjectContext;
-            var entitySet = objectContext.CreateObjectSet<TEntity>();
-            var entityKey = objectContext.CreateEntityKey(entitySet.EntitySet.Name, entity);
-            object foundSet;
-            bool exists = objectContext.TryGetObjectByKey(entityKey, out foundSet);
-            if (exists)
-            {
-                objectContext.Detach(foundSet); //从上下文中移除
-            }
-            return exists;
+            return db.Set<T>().Where(exp);
         }
     }
 }

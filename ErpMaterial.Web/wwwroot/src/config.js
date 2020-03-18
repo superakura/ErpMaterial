@@ -15,8 +15,8 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
       //, views: '../../' //视图所在目录
       , views: '../' //视图所在目录
     ,entry: 'Home/Index' //默认视图文件名
-    ,engine: '' //视图文件后缀名
-    ,pageTabs: true //是否开启页面选项卡功能。单页版不推荐开启
+      , engine: '' //视图文件后缀名
+      , pageTabs: false //是否开启页面选项卡功能。单页版不推荐开启
     
     ,name: 'layuiAdmin Pro'
     ,tableName: 'layuiAdmin' //本地存储表名

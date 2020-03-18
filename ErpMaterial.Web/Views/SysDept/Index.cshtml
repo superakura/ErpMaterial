@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewData["Title"] = "部门管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section modal{
+    <div id="editLay" style="display: none;">
+        <div class="layui-row">
+            <div class="layui-col-md11">
+                <form class="layui-form" id="formEdit" lay-filter="formEdit">
+                    <br />
+                    <input type="text" name="formInfoID" id="formInfoID" class="layui-hide">
+                    @*<input type="text" name="fatherDeptID" id="fatherDeptID" class="layui-hide">*@
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">部门名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="tbxDeptName" lay-verify="required" placeholder="部门名称" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">父级部门ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="tbxDeptFatherID" id="tbxDeptFatherID" lay-verify="required" placeholder="父级部门ID" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">下拉选择框</label>
+                        <div class="layui-input-block">
+                            <select name="ddlDeptState" lay-filter="ddlDeptState">
+                                <option value="0">正常</option>
+                                <option value="1">删除</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">部门排序</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="tbxDeptOrder" lay-verify="required" placeholder="部门排序" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否展开</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="tbxIsOpen" value="1" title="是">
+                            <input type="radio" name="tbxIsOpen" value="0" title="否" checked>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">部门备注</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="部门备注" name="tbxDeptRemark" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="layui-row">
+    <div class="layui-col-xs2">
+        <div class="grid-demo grid-demo-bg1">
+            @*<fieldset class="layui-elem-field layui-field-title">
+                    <legend>部门信息</legend>
+                </fieldset>*@
+            <div id="test1" class="demo-tree-more" style="font-size:18px"></div>
+        </div>
+    </div>
+    <div class="layui-col-xs10">
+        <h2>当前选择的部门：<span id="selectDeptName"></span> ID:<span id="selectDeptID"></span></h2>
+        <button class="layui-btn layui-btn-normal" lay-event="add" id="btnAdd">新增子部门</button>
+        <button class="layui-btn" lay-event="edit" id="btnEdit">编辑</button>
+        <button class="layui-btn layui-btn-danger" lay-event="del" id="btnDel">删除</button>
+    </div>
+</div>
+<script>
+    layui.use(['tree', 'util', 'table', 'laydate', 'form'], function () {
+        var tree = layui.tree
+            , layer = layui.layer
+            , util = layui.util
+            , table = layui.table
+            , laydate = layui.laydate
+            , form = layui.form
+
+        GetDeptList();
+        function GetDeptList() {
+            $.post("/SysDept/ListAll", {}, function (result) {
+                //console.log(result);
+                tree.render({
+                    elem: '#test1' //默认是点击节点可进行收缩
+                    , data: result
+                    , id: 'demoId' //定义索引
+                    , click: function (obj) {
+                        //console.log(obj.data); //得到当前点击的节点数据
+                        $("#selectDeptName").text(obj.data.title);
+                        $("#selectDeptID").text(obj.data.id);
+                        //console.log(obj.state); //得到当前节点的展开状态：open、close、normal
+                        //console.log(obj.elem); //得到当前节点元素
+
+                        //console.log(obj.data.children); //当前节点下是否有子节点
+                    }
+                });
+            });
+        }
+
+        $("#btnAdd").click(function () {
+            if ($("#selectDeptID").text() == "") {
+                layer.msg('请先选择一个部门', { icon: 5 });
+                return;
+            }
+            layer.open({
+                type: 1,//类型,
+                id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                area: ['600px'],//定义宽和高
+                //area: ['600px', '700px'],//定义宽和高
+                title: '表单信息',//题目
+                shadeClose: false,//点击遮罩层关闭
+                content: $('#editLay'),//打开的内容
+                success: function (layero, index) {
+                    $("#formEdit")[0].reset();
+                    $("#tbxDeptFatherID").val($("#selectDeptID").text());
+                    $(".layui-layer-shade").appendTo(layero.parent());
+                }
+            });
+
+        });
+
+        $("#btnEdit").click(function () {
+            if ($("#selectDeptID").text() == "") {
+                layer.msg('请先选择一个部门', { icon: 5 });
+            }
+            else {
+                $.post("/SysDept/GetOne", { id: $("#selectDeptID").text() },
+                    function (data, textStatus, jqXHR) {
+                        //console.log(data);
+                        layer.open({
+                            type: 1,//类型,
+                            id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                            area: ['600px'],//定义宽和高
+                            //area: ['600px', '700px'],//定义宽和高
+                            title: '表单信息',//题目
+                            shadeClose: false,//点击遮罩层关闭
+                            content: $('#editLay'),//打开的内容
+                            success: function (layero, index) {
+                                form.val("formEdit", {
+                                    "formInfoID": data.deptId
+                                    , "tbxDeptName": data.deptName
+                                    , "tbxDeptFatherID": data.deptFatherId
+                                    , "ddlDeptState": data.deptState
+                                    , "tbxDeptRemark": data.deptRemark
+                                    , "tbxDeptOrder": data.deptOrder
+                                    , "tbxIsOpen": data.isOpen
+                                });
+                                $(".layui-layer-shade").appendTo(layero.parent());
+                            }
+                        });
+                    }
+                );
+            }
+
+        });
+
+        $("#btnDel").click(function () {
+            if ($("#selectDeptID").text() == "") {
+                layer.msg('请先选择一个部门', { icon: 5 });
+                return;
+            }
+            layer.confirm('确定要删除吗？', function (index) {
+                $.post("/SysDept/Del", { id: $("#selectDeptID").text() }, function (result) {
+                    if (result == "ok") {
+                        layer.msg('操作成功！', { icon: 6 });
+                        GetDeptList();
+                        $("#selectDeptName").text("");
+                        $("#selectDeptID").text("");
+                    }
+                    else {
+                        layer.msg('错误:' + result, { icon: 5 });
+                    }
+                });
+                return false;
+            });
+
+        });
+
+        form.on('submit(formDemo)', function (data) {
+            //console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+
+            layer.confirm('确定要提交吗？', function (index) {
+                $.post("/SysDept/Update", data.field, function (result) {
+                    if (result == "ok") {
+                        layer.msg('操作成功！', { icon: 6 });
+                        layer.closeAll('page'); //关闭所有页面层
+                        GetDeptList();
+                        $("#selectDeptName").text("");
+                        $("#selectDeptID").text("");
+                    }
+                    else {
+                        layer.msg('错误:' + result, { icon: 5 });
+                    }
+                });
+                return false;
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
+

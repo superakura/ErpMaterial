@@ -24,6 +24,10 @@ namespace ErpMaterial.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 向数据库中插入100条测试数据
+        /// </summary>
+        /// <returns></returns>
         public JsonResult List()
         {
             var skip = Request.Query["page"] == "1" ? 0 : (Convert.ToInt32(Request.Query["page"]) - 1) * Convert.ToInt32(Request.Query["limit"]);
@@ -63,12 +67,54 @@ namespace ErpMaterial.Web.Controllers
             var limit = 0;
             int.TryParse(Request.Query["limit"], out limit);
 
-            return Json(_servicePlanReport.listPage(page, limit));
+            var tbxMaterialName = Request.Query["tbxMaterialName"].ToString();
+            var tbxMaterialNum = Request.Query["tbxMaterialNum"].ToString();
+            
+            Dictionary<string, object> whereList = new Dictionary<string, object>();
+            whereList.Add("tbxMaterialName", tbxMaterialName);
+            whereList.Add("tbxMaterialNum", tbxMaterialNum);
+
+            return Json(_servicePlanReport.listPage(page, limit,whereList));
         }
 
-        public JsonResult ListAll()
+        [HttpPost]
+        public string Update()
         {
-            return Json(_servicePlanReport.list());
+            try
+            {
+                int.TryParse(Request.Form["formInfoID"], out int id);
+
+                var userName = Request.Form["userName"];
+                var sex = Request.Form["sex"];
+                var desc = Request.Form["desc"];
+
+                var info = new ErpMaterial.Models.PlanReport();
+                info.MaterialAge = sex;
+                info.MaterialDesc = desc;
+                info.MaterialCode = userName;
+                info.PlanReportId = id;
+                
+                return _servicePlanReport.Update(info)?"ok":"error";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        [HttpPost]
+        public string Del()
+        {
+            try
+            {
+                int.TryParse(Request.Form["id"], out int id);
+
+                return _servicePlanReport.Del(id) ? "ok" : "error";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }

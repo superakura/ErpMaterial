@@ -1,0 +1,190 @@
+﻿
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<h2>角色信息</h2>*@
+<div class="layui-row">
+    <div class="layui-col-md11">
+        <form class="layui-form" id="formEdit" lay-filter="formEdit">
+            <br />
+            <input type="text" name="formInfoID" id="formInfoID" class="layui-hide">
+
+            <div class="layui-form-item">
+                <h3 id="lblRoleName"></h3>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <h3 id="lblRoleDesc"></h3>
+            </div>
+
+            @*权限信息表，可根据名称和类型进行搜索
+                表格包含添加按钮，控制相同权限重复添加
+            *@
+            <table id="tbAuthInfo" lay-filter="tbAuthInfo"></table>
+
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="addAuth">添加</a>
+            </script>
+            <script type="text/html" id="barDelAuth">
+                <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delAuth">删除</a>
+            </script>
+
+            @*角色所包含的权限表，可删除*@
+            <table id="tbSelectAuth" lay-filter="tbSelectAuth"></table>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    @*<button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>*@
+                    <button class="layui-btn layui-btn-primary" type="button" id="btnBack">返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['tree', 'util', 'table', 'laydate', 'form'], function () {
+        var tree = layui.tree
+            , layer = layui.layer
+            , util = layui.util
+            , table = layui.table
+            , laydate = layui.laydate
+            , form = layui.form;
+
+        var router = layui.router();
+
+        var tableRoleAuth = table.render({
+            elem: '#tbSelectAuth'
+            , url: "/SysRole/ListPageRole?roleID=" + router.search.id
+            , title: '数据表格'
+            , cols: [[{ align: 'center', title: '当前角色已包含的权限', colspan: 6 }], [
+                { align: 'center', toolbar: '#barDelAuth',  width: 75, title: '操作' }
+                , { field: 'authorityId', title: 'ID', hide: true }
+                , { field: 'authorityName', title: '权限名称' }
+                , { field: 'authorityDescribe', title: '权限描述' }
+                , { field: 'authorityType', title: '权限类型' }
+                , { field: 'conflictCode', title: '互斥码' }
+            ]]
+            , page: true
+            , limits: [5, 10]
+            , limit: 5 //每页默认显示的数量
+        });
+
+        var tableAuth = table.render({
+            elem: '#tbAuthInfo'
+            , url: '/SysAuthority/ListPageAuth'
+            , title: '数据表格'
+            , cols: [[{ align: 'center', title: '添加角色所包含的权限', colspan: 6 }], [
+                { align: 'center', toolbar: '#barDemo', width: 75, title: '操作' }
+                , { field: 'authorityId', title: 'ID', hide: true }
+                , { field: 'authorityName', title: '权限名称' }
+                , { field: 'authorityDescribe', title: '权限描述' }
+                , { field: 'authorityType', title: '权限类型' }
+                , { field: 'conflictCode', title: '互斥码' }
+            ]]
+            , limits: [5, 10]
+            , limit: 5 //每页默认显示的数量
+            , page: true
+        });
+
+        table.on('tool(tbAuthInfo)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            switch (obj.event) {
+                case 'addAuth':
+                    //console.log(data);
+                    var roleID = $("#formInfoID").val();
+                    var authID = data.authorityId;
+
+                    //console.log(data.authorityId + roleID);
+                    $.post("/SysRole/AddAuth", { AuthID: authID, RoleID: roleID },
+                        function (data, textStatus, jqXHR) {
+                            //console.log(data);
+                            if (data == "ok") {
+                                tableRoleAuth.reload({
+                                    page: {
+                                        curr: 1 //重新从第 1 页开始
+                                    }
+                                });
+                            }
+                            else {
+                                layer.msg(data);
+                            }
+                        }
+                    );
+                    break;
+            };
+        });
+
+        table.on('tool(tbSelectAuth)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            switch (obj.event) {
+                case 'delAuth':
+                    console.log(data);
+                    var roleAuthID = data.roleAuthorityID;
+
+                    console.log(roleAuthID);
+                    $.post("/SysRole/DelRoleAuth", { roleAuthID: roleAuthID },
+                        function (data, textStatus, jqXHR) {
+                            //console.log(data);
+                            if (data == "ok") {
+                                tableRoleAuth.reload({
+                                    page: {
+                                        curr: 1 //重新从第 1 页开始
+                                    }
+                                });
+                            }
+                            else {
+                                layer.msg(data);
+                            }
+                        }
+                    );
+                    break;
+            };
+        });
+
+        function tableReload() {
+            tableIns.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    searchRoleName: $("#searchRoleName").val()
+                    , searchRoleType: $("#searchRoleType").val()
+                }
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        }
+
+        $("#btnSearch").click(function () {
+            tableReload();
+        });
+
+        $("#btnRefresh").click(function () {
+            $("#formSearch")[0].reset();
+            tableReload();
+        });
+
+
+        //console.log(router.search.id);
+        $("#formInfoID").val(router.search.id);
+
+        GetRoleInfo();
+        function GetRoleInfo() {
+            $.post("/SysRole/GetOne", { id: router.search.id },
+                function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    $("#lblRoleName").text("角色名称：" + data.roleName);
+                    $("#lblRoleDesc").text("角色描述：" + data.roleDescribe);
+                }
+            );
+        }
+
+        $("#btnBack").click(function () {
+            window.location.hash = "/SysRole/Index";
+        });
+    });
+</script>

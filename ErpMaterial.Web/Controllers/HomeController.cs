@@ -98,7 +98,8 @@ namespace ErpMaterial.Web.Controllers
                     ViewBag.userName = User.Identity.Name;
                     if (string.IsNullOrEmpty(returnUrl))
                     {
-                        return RedirectToAction("Index", "Home");
+                        //return RedirectToAction("Index", "Home");
+                        return Redirect("~/start/index.html");
                     }
                     return Redirect(returnUrl);
                     #endregion
@@ -118,6 +119,11 @@ namespace ErpMaterial.Web.Controllers
         {
             HttpContext.SignOutAsync().Wait();//注销
             return RedirectToAction("Login", "Home");
+        }
+
+        public IActionResult OnePage1()
+        {
+            return View();
         }
     }
 }

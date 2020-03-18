@@ -5,108 +5,175 @@
 }
 
 @section modal{
-}
-    <div class="layui-row">
-        <div class="layui-col-xs2">
-            <h1>计划提报</h1>
-            <div class="grid-demo grid-demo-bg1">
-                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
-                    <legend>部门信息</legend>
-                </fieldset>
-                <div id="test1" class="demo-tree-more" style="font-size:18px"></div>
-            </div>
-        </div>
-        <div class="layui-col-xs10">
-            <div class="grid-demo">
-                <form class="layui-form layui-form-pane" action="">
+    <div id="addLay" style="display: none;">
+        <div class="layui-row">
+            <div class="layui-col-md11">
+                <form class="layui-form" id="formAdd" lay-filter="formAdd">
+                    <br />
+                    <input type="text" name="formInfoID" id="formInfoID" class="layui-hide">
                     <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">物资编码</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="date" id="btnDate" autocomplete="off" class="layui-input">
-                            </div>
+                        <label class="layui-form-label">姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="userName" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">物资名称</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="number" autocomplete="off" class="layui-input">
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">单选框</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="sex" value="0" title="男">
+                            <input type="radio" name="sex" value="1" title="女" checked>
                         </div>
-
-                        <div class="layui-inline">
-                            <div class="layui-input-inline">
-                                <div class="layui-btn-group">
-                                    <button class="layui-btn">查询</button>
-                                    <button class="layui-btn"><i class="layui-icon layui-icon-refresh"></i></button>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">请填写描述</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入内容" name="desc" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">下拉选择框</label>
+                        <div class="layui-input-block">
+                            <select name="interest" lay-filter="aihao">
+                                <option value="0">写作</option>
+                                <option value="1">阅读</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开关开</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="isOk" checked lay-skin="switch">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">提交</button>
+                            @*<button type="button" class="layui-btn layui-btn-primary">关闭</button>*@
                         </div>
                     </div>
                 </form>
-
-                <table class="layui-hide" id="demo" lay-filter="test"></table>
-
-                <script type="text/html" id="toolbarDemo">
-                    <div class="layui-btn-container">
-                        <div class="layui-btn-group">
-                            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
-                            <button class="layui-btn layui-btn-sm" lay-event="del">删除</button>
-                        </div>
-                    </div>
-                </script>
             </div>
         </div>
     </div>
-    <script>
-    layui.use(['tree', 'util'], function () {
+}
+
+<div class="layui-row">
+    <div class="layui-col-xs2">
+        <div class="grid-demo grid-demo-bg1">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>部门信息</legend>
+            </fieldset>
+            <div id="test1" class="demo-tree-more" style="font-size:18px"></div>
+        </div>
+    </div>
+    <div class="layui-col-xs10">
+        <div class="grid-demo">
+            <form class="layui-form layui-form-pane" id="formSearch">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">提报时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="date" id="tbxDate" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">物资编码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="tbxMaterialNum" id="tbxMaterialNum" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">物资名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="tbxMaterialName" id="tbxMaterialName" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <div class="layui-btn-group">
+                                <button class="layui-btn" type="button" id="btnSearch">查询</button>
+                                <button class="layui-btn layui-btn-primary" type="button" id="btnRefresh">
+                                    <i class="layui-icon layui-icon-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <table class="layui-hide" id="demo" lay-filter="test"></table>
+
+            <script type="text/html" id="barDemo">
+                @*<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>*@
+                @*<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delRow">删除</a>*@
+                @*<div class="layui-btn-group">
+                        <a class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></a>
+                        <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delRow"><i class="layui-icon layui-icon-delete"></i></a>
+                    </div>*@
+                <a class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></a>
+                <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delRow"><i class="layui-icon layui-icon-delete"></i></a>
+            </script>
+
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container">
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="add">新增</button>
+                    </div>
+                </div>
+            </script>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['tree', 'util', 'table', 'laydate', 'form'], function () {
         var tree = layui.tree
             , layer = layui.layer
             , util = layui.util
+            , table = layui.table
+            , laydate = layui.laydate
+            , form = layui.form
 
-            //模拟数据1
-            , data1 = [{
-                title: '炼油一厂'
-                , id: 1
-                , children: [
-                    {
-                        title: '一套常减压'
-                        , id: 1001
-                    }, {
-                        title: '柴油加氢'
-                        , id: 1002
-                    }]
-            }, {
-                title: '炼油二厂'
-                , id: 2
-                , children: [{
-                    title: '二套ARGG装置'
-                    , id: 2000
+        //模拟数据1
+        var data1 = [{
+            title: '炼油一厂'
+            , id: 1
+            , children: [
+                {
+                    title: '一套常减压'
+                    , id: 1001
                 }, {
-                    title: '烷基化装置'
-                    , id: 2001
+                    title: '柴油加氢'
+                    , id: 1002
                 }]
+        }, {
+            title: '炼油二厂'
+            , id: 2
+            , children: [{
+                title: '二套ARGG装置'
+                , id: 2000
             }, {
-                title: '聚丙烯厂'
-                , id: 3
-                , children: [{
-                    title: '一套聚丙烯'
-                    , id: 3000
-                }, {
-                    title: '二套聚丙烯'
-                    , id: 3001
-                }]
+                title: '烷基化装置'
+                , id: 2001
             }]
+        }, {
+            title: '聚丙烯厂'
+            , id: 3
+            , children: [{
+                title: '一套聚丙烯'
+                , id: 3000
+            }, {
+                title: '二套聚丙烯'
+                , id: 3001
+            }]
+        }]
 
         //常规用法
         tree.render({
             elem: '#test1' //默认是点击节点可进行收缩
             , data: data1
         });
-    });
 
-    layui.use('table', function () {
-        var table = layui.table;
-        table.render({
+        var tableIns = table.render({
             elem: '#demo'
             , url: '/PlanReport/ListPage'
             , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
@@ -114,65 +181,125 @@
             , title: '计划提报明细'
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
-                , { field: 'planReportId', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true }
+                , { align: 'center', toolbar: '#barDemo', fixed: 'left', width: 130, title: '操作' }
+                , { field: 'planReportId', title: 'ID', width: 80, fixed: 'left', hide: true }
                 , { field: 'materialCode', title: '物资编码' }
                 , { field: 'materialDesc', title: '物资名称' }
-                //, { field: 'MaterialDesc', title: '规格型号' }
-                //, { field: 'caizhi', title: '材质' }
-                , { field: 'materialCount', title: '数量'}
+                , { field: 'materialCount', title: '数量' }
                 , { field: 'planReportDept', title: '提报单位' }
                 , { field: 'planReportPerson', title: '提报人' }
                 , { field: 'planReportDateTime', title: '提报时间' }
             ]]
             , page: true
-            , height: 'full-205'
+            , height: 'full-150'
+        });
+
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            switch (obj.event) {
+                case 'edit':
+                    //console.log(data);
+                    //console.log(data.materialDesc);
+                    layer.open({
+                        type: 1,//类型,
+                        id: 'LAY_layuipro', //设定一个id，防止重复弹出
+                        area: ['600px', '700px'],//定义宽和高
+                        title: '修改信息',//题目
+                        shadeClose: false,//点击遮罩层关闭
+                        content: $('#addLay'),//打开的内容
+                        success: function (layero, index) {
+                            //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                            form.val("formAdd", {
+                                "formInfoID": data.planReportId
+                                , "desc": data.materialDesc
+                                , "userName": data.materialCode
+                            });
+                            $(".layui-layer-shade").appendTo(layero.parent());
+                        }
+                    });
+                    break;
+                case 'delRow':
+                    layer.confirm('确定要删除吗？', function (index) {
+                        $.post("/PlanReport/Del", { id: data.planReportId }, function (result) {
+                            if (result == "ok") {
+                                layer.msg('操作成功！', { icon: 6 });
+                                tableIns.reload();
+                            }
+                            else {
+                                layer.msg('错误:' + result, { icon: 5 });
+                            }
+                        });
+                        return false;
+                    });
+                    break;
+            };
         });
 
         table.on('toolbar(test)', function (obj) {
             switch (obj.event) {
                 case 'add':
-                    //layer.msg('添加');
                     layer.open({
                         type: 1,//类型,
                         id: 'LAY_layuipro', //设定一个id，防止重复弹出
                         area: ['600px', '700px'],//定义宽和高
-                        title: '查看详细信息',//题目
-                        shadeClose: false,//点击遮罩层关闭
-                        content: $('#addLay')//打开的内容
-                    });
-                    //layer.open({
-                    //    type: 2,
-                    //    content: "addCode"
-                    //});
-                    break;
-                case 'del':
-                    layer.open({
-                        type: 1,//类型,
-                        id: 'LAY_layuipro', //设定一个id，防止重复弹出
-                        area: ['600px', '700px'],//定义宽和高
-                        title: '查看详细信息',//题目
-                        shadeClose: false,//点击遮罩层关闭
-                        content: $('#delLay')//打开的内容
+                        title: '新增信息',//题目
+                        shadeClose: true,//点击遮罩层关闭
+                        content: $('#addLay'),//打开的内容
+                        success: function (layero, index) {
+                            $("#formAdd")[0].reset();
+                            $(".layui-layer-shade").appendTo(layero.parent());
+                        }
                     });
                     break;
             };
         });
-    });
-
-    layui.use('laydate', function () {
-        var laydate = layui.laydate;
 
         laydate.render({
-            elem: '#btnDate'
+            elem: '#tbxDate'
         });
-    });
 
-    layui.use('form', function () {
-        var form = layui.form;
-        form.on('submit(*)', function (data) {
+        form.on('submit(formDemo)', function (data) {
             console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+
+            layer.confirm('确定要提交吗？', function (index) {
+                $.post("/PlanReport/Update", data.field, function (result) {
+                    if (result == "ok") {
+                        layer.msg('操作成功！', { icon: 6 });
+                        layer.closeAll('page'); //关闭所有页面层
+                        tableIns.reload();
+                    }
+                    else {
+                        layer.msg('错误:' + result, { icon: 5 });
+                    }
+                });
+                return false;
+            });
+
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
-        //各种基于事件的操作，下面会有进一步介绍
+
+        function tableReload() {
+            tableIns.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    tbxMaterialName: $("#tbxMaterialName").val()
+                    , tbxMaterialNum: $("#tbxMaterialNum").val()
+                }
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        }
+
+        $("#btnSearch").click(function () {
+            tableReload();
+        });
+
+        $("#btnRefresh").click(function () {
+            $("#formSearch")[0].reset();
+            tableReload();
+        });
     });
-    </script>
+</script>
