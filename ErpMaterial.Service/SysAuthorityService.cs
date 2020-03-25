@@ -92,5 +92,10 @@ namespace ErpMaterial.Service
                 return _repo.Add(sysAuthorityInfo).Result;
             }
         }
+
+        public MenuLayUI memuList(List<int> userMenuID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

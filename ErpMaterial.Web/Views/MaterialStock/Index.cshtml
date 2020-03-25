@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewData["Title"] = "物资库存";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="layui-row">
+    <div class="layui-col-xs12">
+        <div class="grid-demo">
+            <form class="layui-form layui-form-pane" id="formSearch">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label layui-bg-green">物资描述</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="searchLogType" id="searchLogType" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label layui-bg-orange">账龄</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="searchLogMessage" id="searchLogMessage" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label layui-bg-cyan">入库时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="searchStockInputDateStart" id="searchStockInputDateStart" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">--</div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="searchStockInputDateEnd" id="searchStockInputDateEnd" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <div class="layui-btn-group">
+                                <button class="layui-btn" type="button" id="btnSearch">查询</button>
+                                <button class="layui-btn layui-btn-primary" type="button" id="btnRefresh">
+                                    <i class="layui-icon layui-icon-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <table class="layui-hide" id="tbInfo" lay-filter="tbInfo"></table>
+
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="setWarranty">设置质保期</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="historyPlan">历史计划、采购</a>
+            </script>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['tree', 'util', 'table', 'laydate', 'form'], function () {
+        var tree = layui.tree
+            , layer = layui.layer
+            , util = layui.util
+            , table = layui.table
+            , laydate = layui.laydate
+            , form = layui.form;
+
+        var tableIns = table.render({
+            elem: '#tbInfo'
+            , url: '/MaterialStock/ListPage'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports']
+            , title: '数据表格'
+            , cols: [[
+                { type: 'checkbox', fixed: 'left' }
+                , { field: 'erpStorageId', title: 'ID', hide: true }
+                , { align: 'center', toolbar: '#barDemo', width: 210, fixed: 'left',title: '操作' }
+                , { field: 'werks', title: '工厂', hide: true }
+                , { field: 'lgort', title: '库存地', hide: true }
+                , { field: 'lgnum', title: '仓库号', hide: true }
+                , { field: 'lgtyp', title: '仓储类型', hide: true }
+                , { field: 'lgpla', title: '仓位', hide: true }
+
+                , { field: 'maktx', title: '物资编码' }
+                , { field: 'matkl', title: '物料描述' }
+                , { field: 'verme', title: '数量' }
+                , { field: 'salk', title: '金额' }
+                , { field: 'msehl', title: '单位' }
+                , { field: 'wdatu', title: '入库时间' }
+                , { field: 'userName', title: '记账人员' }
+                , { field: 'nameTextc', title: '记账人员编号', hide: true }
+                , { field: 'aging', title: '账龄' }
+            ]]
+            , page: true
+            , height: 'full-150'
+        });
+
+        function tableReload() {
+            tableIns.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    searchLogType: $("#searchLogType").val()
+                    , searchLogMessage: $("#searchLogMessage").val()
+                    , searchLogDateTime: $("#searchLogDateTime").val()
+                }
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        }
+
+        laydate.render({
+            elem: '#searchStockInputDateStart'
+        });
+        laydate.render({
+            elem: '#searchStockInputDateEnd'
+        });
+
+        $("#btnSearch").click(function () {
+            tableReload();
+        });
+
+        $("#btnRefresh").click(function () {
+            $("#formSearch")[0].reset();
+            tableReload();
+        });
+    });
+</script>

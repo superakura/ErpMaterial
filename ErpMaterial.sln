@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErpMaterial.Web", "ErpMaterial.Web\ErpMaterial.Web.csproj", "{25954DB4-0957-498D-B5C8-C75B7C759B54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErpMaterial.Web", "ErpMaterial.Web\ErpMaterial.Web.csproj", "{25954DB4-0957-498D-B5C8-C75B7C759B54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErpMaterial.Models", "ErpMaterial.Models\ErpMaterial.Models.csproj", "{2E62B6D1-4A42-4503-B33E-0C278A1B58F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErpMaterial.Models", "ErpMaterial.Models\ErpMaterial.Models.csproj", "{2E62B6D1-4A42-4503-B33E-0C278A1B58F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErpMaterial.Repository", "ErpMaterial.Repository\ErpMaterial.Repository.csproj", "{ED24C9D1-3645-4635-BCCC-95494C84CE7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErpMaterial.Repository", "ErpMaterial.Repository\ErpMaterial.Repository.csproj", "{ED24C9D1-3645-4635-BCCC-95494C84CE7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErpMaterial.Service", "ErpMaterial.Service\ErpMaterial.Service.csproj", "{0C22AD66-9BFA-42F0-9C42-04B1D8A23CDB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErpMaterial.Common", "ErpMaterial.Common\ErpMaterial.Common.csproj", "{13AC8F3B-2BCB-4A49-8AB3-338A87A18112}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErpMaterial.Service", "ErpMaterial.Service\ErpMaterial.Service.csproj", "{0C22AD66-9BFA-42F0-9C42-04B1D8A23CDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{0C22AD66-9BFA-42F0-9C42-04B1D8A23CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C22AD66-9BFA-42F0-9C42-04B1D8A23CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C22AD66-9BFA-42F0-9C42-04B1D8A23CDB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13AC8F3B-2BCB-4A49-8AB3-338A87A18112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13AC8F3B-2BCB-4A49-8AB3-338A87A18112}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13AC8F3B-2BCB-4A49-8AB3-338A87A18112}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13AC8F3B-2BCB-4A49-8AB3-338A87A18112}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

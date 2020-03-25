@@ -26,18 +26,22 @@
                 </a>
             </li>
             <li class="layui-nav-item" lay-unselect>
-                <script type="text/html" template lay-url="./json/user/session.js"
-                        lay-done="layui.element.render('nav', 'layadmin-layout-right');">
-                    <a href="javascript:;">
-                        <cite>{{ d.data.username }}</cite>
-                    </a>
-                    <dl class="layui-nav-child">
-                        <dd><a lay-href="set/user/info">基本资料</a></dd>
-                        <dd><a lay-href="set/user/password">修改密码</a></dd>
-                        <hr>
-                        <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
-                    </dl>
-                </script>
+                <a href="#">当前用户：@ViewBag.UserName</a>
+                @*<script type="text/html" template lay-url="./json/user/session.js"
+                    lay-done="layui.element.render('nav', 'layadmin-layout-right');">
+                <a href="javascript:;">
+                    <cite>{{ d.data.username }}</cite>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a lay-href="set/user/info">基本资料</a></dd>
+                    <dd><a lay-href="set/user/password">修改密码</a></dd>
+                    <hr>
+                    <dd layadmin-event="logout" style="text-align: center;"></dd>
+                </dl>
+            </script>*@
+            </li>
+            <li class="layui-nav-item" lay-unselect>
+                <a href="/Home/Logout">退出</a>
             </li>
 
             <li class="layui-nav-item layui-hide-xs" lay-unselect>

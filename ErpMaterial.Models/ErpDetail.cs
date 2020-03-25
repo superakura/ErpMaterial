@@ -34,6 +34,9 @@ namespace ErpMaterial.Models
         public string Kostl { get; set; }
         public string Ktext { get; set; }
         public string Pspel { get; set; }
+        public string GdNum { get; set; }
         public string Zthdw { get; set; }
+        public string UserNum { get; set; }
+        public DateTime? CreateTime { get; set; }
     }
 }

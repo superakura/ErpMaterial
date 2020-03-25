@@ -14,6 +14,6 @@ namespace ErpMaterial.Service.Interface
 
         bool Del(int id);
 
-        MenuLayUI memuList();
+        MenuLayUI memuList(List<int> userMenuID);
     }
 }

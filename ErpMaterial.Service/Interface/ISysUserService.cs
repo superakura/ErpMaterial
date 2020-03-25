@@ -15,5 +15,7 @@ namespace ErpMaterial.Service.Interface
         bool Del(int id);
 
         UserInfo GetOne(int id);
+
+        SysUserInfo GetUserInfoByNum(string userNum);
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace ErpMaterial.Web
+namespace ErpMaterial.Service.ViewModel
 {
-    public partial class ErpDetail
+    public class ViewMaterialBack
     {
         public int ErpDetailId { get; set; }
         public string Mblnr { get; set; }
@@ -34,6 +35,24 @@ namespace ErpMaterial.Web
         public string Kostl { get; set; }
         public string Ktext { get; set; }
         public string Pspel { get; set; }
+        public string GdNum { get; set; }
         public string Zthdw { get; set; }
+        public string UserNum { get; set; }
+        public DateTime? CreateTime { get; set; }
+
+        /// <summary>
+        /// 领用人姓名
+        /// </summary>
+        public string userName { get; set; }
+
+        /// <summary>
+        /// 领用部门
+        /// </summary>
+        public string userDept { get; set; }
+
+        /// <summary>
+        /// 退库原因
+        /// </summary>
+        public string backReason { get; set; }
     }
 }

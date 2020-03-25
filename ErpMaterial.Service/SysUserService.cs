@@ -55,6 +55,11 @@ namespace ErpMaterial.Service
             return userInfo.FirstOrDefault();
         }
 
+        public SysUserInfo GetUserInfoByNum(string userNum)
+        {
+            return _repoUser.GetEntity(w => w.UserNum == userNum);
+        }
+
         public PageLayUI<UserInfo> listPage(int page, int limit, Dictionary<string, object> conditions)
         {
             var skip = page == 1 ? 0 : (page - 1) * limit;

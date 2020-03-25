@@ -90,7 +90,7 @@
 
         GetDeptList();
         function GetDeptList() {
-            $.post("/SysDept/ListAll", {}, function (result) {
+            $.post("/SysDept/ListAll", {selectDeptList: ""}, function (result) {
                 //console.log(result);
                 tree.render({
                     elem: '#test1' //默认是点击节点可进行收缩

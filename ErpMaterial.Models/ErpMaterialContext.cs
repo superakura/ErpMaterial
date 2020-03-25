@@ -19,8 +19,10 @@ namespace ErpMaterial.Models
         public virtual DbSet<ErpPlan> ErpPlan { get; set; }
         public virtual DbSet<ErpPurchase> ErpPurchase { get; set; }
         public virtual DbSet<ErpStorage> ErpStorage { get; set; }
+        public virtual DbSet<MaterialFrameContract> MaterialFrameContract { get; set; }
         public virtual DbSet<MaterialProcurement> MaterialProcurement { get; set; }
         public virtual DbSet<MaterialStorage> MaterialStorage { get; set; }
+        public virtual DbSet<MaterialUrgentContract> MaterialUrgentContract { get; set; }
         public virtual DbSet<MaterialUse> MaterialUse { get; set; }
         public virtual DbSet<MaterialWithDrawal> MaterialWithDrawal { get; set; }
         public virtual DbSet<PlanReport> PlanReport { get; set; }
@@ -32,6 +34,7 @@ namespace ErpMaterial.Models
         public virtual DbSet<SysRoleAuthority> SysRoleAuthority { get; set; }
         public virtual DbSet<SysRoleInfo> SysRoleInfo { get; set; }
         public virtual DbSet<SysUserInfo> SysUserInfo { get; set; }
+        public virtual DbSet<SysUserKq> SysUserKq { get; set; }
         public virtual DbSet<SysUserRole> SysUserRole { get; set; }
         public virtual DbSet<WasteMaterials> WasteMaterials { get; set; }
 
@@ -40,8 +43,7 @@ namespace ErpMaterial.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True",
-                    b => b.UseRowNumberForPaging());
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True",b=>b.UseRowNumberForPaging());
             }
         }
 
@@ -71,12 +73,21 @@ namespace ErpMaterial.Models
                     .HasColumnName("BWART")
                     .HasMaxLength(500);
 
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("CREATE_TIME")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.Ebeln)
                     .HasColumnName("EBELN")
                     .HasMaxLength(500);
 
                 entity.Property(e => e.Ebelp)
                     .HasColumnName("EBELP")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.GdNum)
+                    .HasColumnName("GD_NUM")
                     .HasMaxLength(500);
 
                 entity.Property(e => e.Kostl)
@@ -161,6 +172,10 @@ namespace ErpMaterial.Models
                     .HasColumnName("UMWRK")
                     .HasMaxLength(500);
 
+                entity.Property(e => e.UserNum)
+                    .HasColumnName("USER_NUM")
+                    .HasMaxLength(500);
+
                 entity.Property(e => e.Werks)
                     .HasColumnName("WERKS")
                     .HasMaxLength(500);
@@ -177,6 +192,27 @@ namespace ErpMaterial.Models
                 entity.Property(e => e.ErpPlanId).HasColumnName("ERP_PLAN_ID");
 
                 entity.Property(e => e.Bdmng).HasColumnName("BDMNG");
+
+                entity.Property(e => e.BdmngUnit)
+                    .HasColumnName("BDMNG_UNIT")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Bwart)
+                    .HasColumnName("BWART")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("CREATE_TIME")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Ebeln)
+                    .HasColumnName("EBELN")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Ebelp)
+                    .HasColumnName("EBELP")
+                    .HasMaxLength(500);
 
                 entity.Property(e => e.Maktx)
                     .HasColumnName("MAKTX")
@@ -213,6 +249,14 @@ namespace ErpMaterial.Models
 
                 entity.Property(e => e.ErpPurchaseId).HasColumnName("ERP_PURCHASE_ID");
 
+                entity.Property(e => e.Bldat)
+                    .HasColumnName("BLDAT")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.CreateTime)
+                    .HasColumnName("CREATE_TIME")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Ebeln)
                     .HasColumnName("EBELN")
                     .HasMaxLength(500);
@@ -242,6 +286,10 @@ namespace ErpMaterial.Models
                     .HasMaxLength(500);
 
                 entity.Property(e => e.Menge).HasColumnName("MENGE");
+
+                entity.Property(e => e.MengeUnit)
+                    .HasColumnName("MENGE_UNIT")
+                    .HasMaxLength(500);
 
                 entity.Property(e => e.Netpr).HasColumnName("NETPR");
 
@@ -309,6 +357,31 @@ namespace ErpMaterial.Models
                     .HasMaxLength(500);
             });
 
+            modelBuilder.Entity<MaterialFrameContract>(entity =>
+            {
+                entity.HasKey(e => e.FrameContractId);
+
+                entity.Property(e => e.FrameContractId)
+                    .HasColumnName("FrameContractID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.CreateUserId).HasColumnName("CreateUserID");
+
+                entity.Property(e => e.EditTime).HasColumnType("datetime");
+
+                entity.Property(e => e.EditUserId).HasColumnName("EditUserID");
+
+                entity.Property(e => e.FrameContractName).HasMaxLength(500);
+
+                entity.Property(e => e.FrameContractNum).HasMaxLength(100);
+
+                entity.Property(e => e.IsDel)
+                    .HasColumnName("isDel")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<MaterialProcurement>(entity =>
             {
                 entity.Property(e => e.MaterialProcurementId).HasColumnName("MaterialProcurementID");
@@ -355,6 +428,32 @@ namespace ErpMaterial.Models
                 entity.Property(e => e.Supplier).HasMaxLength(500);
 
                 entity.Property(e => e.TransferTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<MaterialUrgentContract>(entity =>
+            {
+                entity.HasKey(e => e.UrgentContractId)
+                    .HasName("PK_UrgentContract");
+
+                entity.Property(e => e.UrgentContractId)
+                    .HasColumnName("UrgentContractID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.CreateUserId).HasColumnName("CreateUserID");
+
+                entity.Property(e => e.EditTime).HasColumnType("datetime");
+
+                entity.Property(e => e.EditUserId).HasColumnName("EditUserID");
+
+                entity.Property(e => e.IsDel)
+                    .HasColumnName("isDel")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UrgentContractName).HasMaxLength(500);
+
+                entity.Property(e => e.UrgentContractNum).HasMaxLength(100);
             });
 
             modelBuilder.Entity<MaterialUse>(entity =>
@@ -614,6 +713,20 @@ namespace ErpMaterial.Models
                 entity.Property(e => e.UserRoleList).HasMaxLength(1000);
 
                 entity.Property(e => e.UserState).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<SysUserKq>(entity =>
+            {
+                entity.HasKey(e => e.UserNum)
+                    .HasName("PK_SysUserKq_1");
+
+                entity.Property(e => e.UserNum)
+                    .HasMaxLength(50)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.UserDept).HasMaxLength(100);
+
+                entity.Property(e => e.UserName).HasMaxLength(50);
             });
 
             modelBuilder.Entity<SysUserRole>(entity =>

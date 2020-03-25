@@ -2,18 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+
+using Microsoft.EntityFrameworkCore;
 using ErpMaterial.Repository;
 using ErpMaterial.Models;
 using ErpMaterial.Service;
 using ErpMaterial.Service.Interface;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 
 namespace ErpMaterial.Web
 {
@@ -29,6 +30,13 @@ namespace ErpMaterial.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ErpMaterialContext>(options => { options.UseSqlServer("Data Source=.;Initial Catalog=ErpMaterial;Integrated Security=True", b => b.UseRowNumberForPaging()); });
 
@@ -42,6 +50,12 @@ namespace ErpMaterial.Web
             services.AddTransient<ISysNoticeService,SysNoticeService>();
             services.AddTransient<ISysUserService,SysUserService>();
             services.AddTransient<ISysRoleAuthService,SysRoleAuthService>();
+            services.AddTransient<IMaterialStockService,MaterialStockService>();
+            services.AddTransient<IMaterialPurchaseService,MaterialPurchaseService>();
+            services.AddTransient<IMaterialPlanService,MaterialPlanService>();
+            services.AddTransient<IMaterialsOutService,MaterialsOutService>();
+            services.AddTransient<IMaterialBackService,MaterialBackService>();
+            services.AddTransient<IMaterialScrapService,MaterialScrapService>();
             #endregion
 
             #region 添加cookie认证服务
@@ -51,21 +65,16 @@ namespace ErpMaterial.Web
             {
                 options.LoginPath = "/Home/Login/";
                 options.LogoutPath = new PathString("/login");
-                options.AccessDeniedPath = new PathString("/home/NoRole");
+                options.AccessDeniedPath = new PathString("/Home/Login");
             });
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-            #endregion 
 
-            services.AddMvc();
+            #endregion
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -75,18 +84,23 @@ namespace ErpMaterial.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseAuthentication();
             app.UseStaticFiles();
-
-            app.UseRouting();
-            app.UseAuthorization();
             app.UseCookiePolicy();
 
-            app.UseEndpoints(endpoints =>
+            app.UseMvc(routes =>
             {
-                endpoints.MapControllerRoute(
+                routes.MapRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Login}/{id?}");
+                    template: "{controller=Home}/{action=Login}/{id?}");
             });
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Login}/{id?}");
+            //});
         }
     }
 }

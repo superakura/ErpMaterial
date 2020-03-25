@@ -11,8 +11,11 @@ namespace ErpMaterial.Web.Controllers
     public class SysAuthorityController : Controller
     {
         private ISysAuthorityService _serviceSysAuthority;
-        public SysAuthorityController(ISysAuthorityService serviceSysAuthority)
+        private ISysUserService _serviceSysUser;
+        public SysAuthorityController(ISysAuthorityService serviceSysAuthority,
+            ISysUserService serviceSysUser)
         {
+            _serviceSysUser = serviceSysUser;
             _serviceSysAuthority = serviceSysAuthority;
         }
 
@@ -97,7 +100,13 @@ namespace ErpMaterial.Web.Controllers
         {
             try
             {
-                var list = _serviceSysAuthority.memuList();
+                var userMenuStrID = _serviceSysUser.GetUserInfoByNum(User.Identity.Name).UserAuthorityList.Split(',');
+                var userMenuID = new List<int>();
+                foreach (var item in userMenuStrID)
+                {
+                    userMenuID.Add(Convert.ToInt32(item));
+                }
+                var list = _serviceSysAuthority.memuList(userMenuID);
                 return Json(list);
             }
             catch (Exception ex)

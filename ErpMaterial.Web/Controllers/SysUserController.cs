@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ErpMaterial.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ErpMaterial.Web.Controllers
 {
+    //[Authorize]
     public class SysUserController : Controller
     {
         private ISysUserService _serviceSysUser;

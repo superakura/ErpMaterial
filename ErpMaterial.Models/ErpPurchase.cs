@@ -11,10 +11,13 @@ namespace ErpMaterial.Models
         public string Matnr { get; set; }
         public string Maktx { get; set; }
         public double? Menge { get; set; }
+        public string MengeUnit { get; set; }
         public string Lifnr { get; set; }
         public string LifnrDesc { get; set; }
         public string Interiorcode { get; set; }
         public string ReleaseDate { get; set; }
-        public double Netpr { get; set; }
+        public string Bldat { get; set; }
+        public double? Netpr { get; set; }
+        public DateTime? CreateTime { get; set; }
     }
 }

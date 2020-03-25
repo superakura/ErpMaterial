@@ -57,17 +57,21 @@ namespace ErpMaterial.Service
             }
         }
 
-        public MenuLayUI memuList()
+        public MenuLayUI memuList(List<int> userMenuID)
         {
             var menuDataList = new List<MenuDataLayUI>();
-            var rootMenu = _repo.GetEntities(w => w.AuthorityType == "菜单" && w.MenuFatherId == 0).ToList();
+
+            var rootMenu = _repo.GetEntities(w => w.AuthorityType == "菜单"
+            && w.MenuFatherId == 0
+            && userMenuID.Contains(w.AuthorityId)).OrderBy(o=>o.MenuOrder).ToList();
+
             foreach (var item in rootMenu)
             {
                 var menuData = new MenuDataLayUI();
                 menuData.icon = item.MenuIcon;
                 menuData.jump = item.MenuUrl;
                 menuData.title = item.MenuName;
-                menuData.list = GetChildMenu(item);
+                menuData.list = GetChildMenu(item, userMenuID);
                 menuDataList.Add(menuData);
             }
 
@@ -80,18 +84,21 @@ namespace ErpMaterial.Service
             return menu;
         }
 
-        public List<MenuDataLayUI> GetChildMenu(SysAuthorityInfo menu)
+        public List<MenuDataLayUI> GetChildMenu(SysAuthorityInfo menu,List<int> userMenuID)
         {
             var menuDataList = new List<MenuDataLayUI>();
-            var menuList = _repo.GetEntities(w => w.AuthorityType == "菜单" && w.MenuFatherId == menu.AuthorityId)
+
+            var menuList = _repo.GetEntities(w => w.AuthorityType == "菜单" 
+            && w.MenuFatherId == menu.AuthorityId && userMenuID.Contains(w.AuthorityId))
                 .OrderBy(o=>o.MenuOrder).ToList();
+
             foreach (var item in menuList)
             {
                 var menuData = new MenuDataLayUI();
                 menuData.icon = item.MenuIcon;
                 menuData.jump = item.MenuUrl;
                 menuData.title = item.MenuName;
-                menuData.list = GetChildMenu(item);
+                menuData.list = GetChildMenu(item, userMenuID);
                 menuDataList.Add(menuData);
             }
             return menuDataList;
